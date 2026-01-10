@@ -6,12 +6,12 @@ class User < ActiveRecord::Base
 
   include DeviseTokenAuth::Concerns::User
 
-  before_validation :create_default_nickname, on: :create
+  before_create :create_nickname
   validates :nickname, uniqueness: true
 
   private
 
-  def create_default_nickname
+  def create_nickname
     return if nickname.present?
 
     loop do
