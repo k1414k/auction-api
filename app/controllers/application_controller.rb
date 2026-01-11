@@ -6,7 +6,7 @@ class ApplicationController < ActionController::API
   protected
   def config_permitted_params
     devise_parameter_sanitizer.permit(:sign_up, keys: [:name, :nickname])
-    devise_parameter_sanitizer.permit(:account_update, keys: [:name])
+    devise_parameter_sanitizer.permit(:account_update, keys: [:name, :nickname, :password, :password_confirmation, :current_password])
   end
 
   def remove_internal_devise_params
