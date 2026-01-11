@@ -6,8 +6,9 @@ class User < ActiveRecord::Base
 
   include DeviseTokenAuth::Concerns::User
 
-  before_create :create_nickname
-  validates :nickname, uniqueness: true
+  before_validation :create_nickname, on: :create
+
+  validates :nickname, presence: true, uniqueness: true
 
   private
 
