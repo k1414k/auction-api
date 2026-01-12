@@ -7,6 +7,8 @@ class V1::UsersController < ApplicationController
       name: current_user.name,
       nickname: current_user.nickname,
       email: current_user.email,
+      balance: current_user.balance,
+      points: current_user.points,
     }
   end
 end
