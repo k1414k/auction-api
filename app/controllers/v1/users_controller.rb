@@ -3,7 +3,6 @@ class V1::UsersController < ApplicationController
 
   def my_profile
     render json: {
-      id: current_user.id,
       name: current_user.name,
       nickname: current_user.nickname,
       email: current_user.email,
@@ -11,6 +10,10 @@ class V1::UsersController < ApplicationController
       points: current_user.points,
     }
   end
+
+  
+
+
 
   MAX_BALANCE_TRANSACTION = 100_000
   MAX_POINTS_TRANSACTION  = 1_000_000

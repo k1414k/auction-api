@@ -8,7 +8,7 @@ class User < ActiveRecord::Base
 
   before_validation :create_nickname, on: :create
 
-  validates :nickname, presence: true, uniqueness: true
+  validates :nickname, presence: true, uniqueness: true, length: {minimum:2, maximum:10}
 
   private
 
