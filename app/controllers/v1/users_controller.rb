@@ -8,17 +8,14 @@ class V1::UsersController < ApplicationController
       email: current_user.email,
       balance: current_user.balance,
       points: current_user.points,
+      avatar_url: current_user.avatar.attached? ?
+      url_for(current_user.avatar) : nil
     }
   end
-
-  
-
-
 
   MAX_BALANCE_TRANSACTION = 100_000
   MAX_POINTS_TRANSACTION  = 1_000_000
   ALLOWED_TYPES = %w[balance points].freeze
-
   def update_wallet
     amount = params.require(:amount).to_i
     type   = params.require(:type)
@@ -41,6 +38,18 @@ class V1::UsersController < ApplicationController
     render json: {
       balance: current_user.balance,
       points: current_user.points
+    }
+  end
+
+  def update_avatar
+    if params[:avatar].blank?
+      return error("avatar is required")
+    end
+
+    current_user.avatar.attach(params[:avatar])
+
+    render json: {
+      avatar_url: url_for(current_user.avatar)
     }
   end
 
