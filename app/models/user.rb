@@ -1,6 +1,10 @@
 class User < ActiveRecord::Base
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
+  has_many :items
+  has_many :buy_orders, class_name: "Order", foreign_key: ":buyer_id"
+  has_many :sell_orders, class_name: "Order", foreign_key: ":seller_id"
+
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 

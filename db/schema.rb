@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_01_14_171149) do
+ActiveRecord::Schema[7.1].define(version: 2026_01_14_173235) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -60,6 +60,19 @@ ActiveRecord::Schema[7.1].define(version: 2026_01_14_171149) do
     t.index ["user_id"], name: "index_items_on_user_id"
   end
 
+  create_table "orders", force: :cascade do |t|
+    t.integer "item_id", null: false
+    t.bigint "buyer_id", null: false
+    t.bigint "seller_id", null: false
+    t.integer "status", default: 0, null: false
+    t.text "shipping_address"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["buyer_id"], name: "index_orders_on_buyer_id"
+    t.index ["item_id"], name: "index_orders_on_item_id"
+    t.index ["seller_id"], name: "index_orders_on_seller_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "provider", default: "email", null: false
     t.string "uid", default: "", null: false
@@ -85,4 +98,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_01_14_171149) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "items", "categories"
   add_foreign_key "items", "users"
+  add_foreign_key "orders", "items"
+  add_foreign_key "orders", "users", column: "buyer_id"
+  add_foreign_key "orders", "users", column: "seller_id"
 end
