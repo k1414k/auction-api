@@ -1,3 +1,8 @@
+## Database Design
+本アプリはオークションサービスを想定し、
+ユーザー・商品・入札・カテゴリを正規化して設計しています。
+
+
 # README
 
 This README would normally document whatever steps are necessary to get the
