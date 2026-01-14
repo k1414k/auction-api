@@ -2,6 +2,9 @@ class Item < ApplicationRecord
   belongs_to :user
   belongs_to :category
   has_one :order
+  has_many :favorites, dependent: :destroy
+  has_many :favorited_users, through: :favorites, source: :user
+
 
   enum condition: {
     new: 0,
