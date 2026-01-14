@@ -1,9 +1,10 @@
 class User < ActiveRecord::Base
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
+  has_many :messages, dependent: :destroy
   has_many :items
-  has_many :buy_orders, class_name: "Order", foreign_key: ":buyer_id"
-  has_many :sell_orders, class_name: "Order", foreign_key: ":seller_id"
+  has_many :buy_orders, class_name: "Order", foreign_key: :buyer_id
+  has_many :sell_orders, class_name: "Order", foreign_key: :seller_id
   has_many :favorites, dependent: :destroy
   #ユーザーは たくさんの favorites を持つ
   #ユーザー削除時に その人のいいねも消す
