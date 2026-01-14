@@ -8,8 +8,6 @@ class CreateItems < ActiveRecord::Migration[7.1]
       t.text    :description
       t.integer :price, null: false
 
-      t.integer :condition, default: 0, null: false
-      t.integer :shipping_fee_payer, default: 0, null: false
       t.integer :trading_status, default: 0, null: false
 
       t.timestamps
