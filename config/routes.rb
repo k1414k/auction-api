@@ -5,5 +5,7 @@ Rails.application.routes.draw do
     get 'user', to: 'users#my_profile'
     patch 'user/wallet', to: 'users#update_wallet'
     patch 'user/avatar', to: 'users#update_avatar'
+
+    resources :categories, only: [:index, :show]
   end
 end

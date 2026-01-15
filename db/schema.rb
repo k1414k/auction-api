@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_01_14_174444) do
+ActiveRecord::Schema[7.1].define(version: 2026_01_14_185515) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -69,6 +69,16 @@ ActiveRecord::Schema[7.1].define(version: 2026_01_14_174444) do
     t.index ["user_id"], name: "index_items_on_user_id"
   end
 
+  create_table "messages", force: :cascade do |t|
+    t.integer "order_id", null: false
+    t.integer "user_id", null: false
+    t.text "content"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["order_id"], name: "index_messages_on_order_id"
+    t.index ["user_id"], name: "index_messages_on_user_id"
+  end
+
   create_table "orders", force: :cascade do |t|
     t.integer "item_id", null: false
     t.bigint "buyer_id", null: false
@@ -109,6 +119,8 @@ ActiveRecord::Schema[7.1].define(version: 2026_01_14_174444) do
   add_foreign_key "favorites", "users"
   add_foreign_key "items", "categories"
   add_foreign_key "items", "users"
+  add_foreign_key "messages", "orders"
+  add_foreign_key "messages", "users"
   add_foreign_key "orders", "items"
   add_foreign_key "orders", "users", column: "buyer_id"
   add_foreign_key "orders", "users", column: "seller_id"
