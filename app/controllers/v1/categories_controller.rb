@@ -1,14 +1,14 @@
 class V1::CategoriesController < ApplicationController
-  before_action :set_category, only: [:show]
+  # before_action :set_category, only: [:show]
 
   def index
     categories = Category.all
     render json: categories
   end
 
-  def show
-    render json: @category
-  end
+  # def show
+  #   render json: @category
+  # end
 
   private
 

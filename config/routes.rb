@@ -6,6 +6,7 @@ Rails.application.routes.draw do
     patch 'user/wallet', to: 'users#update_wallet'
     patch 'user/avatar', to: 'users#update_avatar'
 
-    resources :categories, only: [:index, :show]
+    resources :categories, only: [:index]
+    resources :items
   end
 end
