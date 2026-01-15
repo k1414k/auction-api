@@ -8,6 +8,7 @@ class V1::UsersController < ApplicationController
       email: current_user.email,
       balance: current_user.balance,
       points: current_user.points,
+      introduction: current_user.introduction ,
       avatar_url: current_user.avatar.attached? ?
       url_for(current_user.avatar) : nil
     }
