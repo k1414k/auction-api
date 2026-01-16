@@ -11,6 +11,8 @@ class User < ActiveRecord::Base
   has_many :favorite_items, through: :favorites, source: :item
   #ユーザーはfavorites を経由してitem をたくさん持っているそれを favorite_items という名前で呼ぶ
   #N:N関係はthrough経由先が必要今はそれがfavoriteテーブル
+
+  
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
