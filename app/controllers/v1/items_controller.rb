@@ -1,6 +1,7 @@
 class V1::ItemsController < ApplicationController
   before_action :set_item, only: [:show, :update, :destroy]
-
+  before_action :authenticate_user!, only: [:create]
+  
   def index
     @items = Item.all
     render json: @items
@@ -11,7 +12,8 @@ class V1::ItemsController < ApplicationController
   end
 
   def create
-    @item = Item.new(item_params)
+    @item = current_user.items.build(item_params)
+    
     if @item.save
       render json: @item, status: :created
     else
