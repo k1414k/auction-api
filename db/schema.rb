@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_01_16_115309) do
+ActiveRecord::Schema[7.1].define(version: 2026_01_18_123847) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -108,9 +108,11 @@ ActiveRecord::Schema[7.1].define(version: 2026_01_16_115309) do
     t.integer "balance", default: 0, null: false
     t.integer "points", default: 0, null: false
     t.text "introduction", default: "ここを押して自己紹介を自由に書いてみましょう。"
+    t.integer "role", default: 0, null: false
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["nickname"], name: "index_users_on_nickname", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
+    t.index ["role"], name: "index_users_on_role"
     t.index ["uid", "provider"], name: "index_users_on_uid_and_provider", unique: true
   end
 

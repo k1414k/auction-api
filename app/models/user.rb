@@ -34,5 +34,7 @@ class User < ActiveRecord::Base
       break unless User.exists?(nickname: nickname)
     end
   end
+
+  enum role: { user: 0, admin: 1 }
   
 end
