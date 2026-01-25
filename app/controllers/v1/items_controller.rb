@@ -7,7 +7,7 @@ class V1::ItemsController < ApplicationController
     render json: items.map { |item|
       {
         **item.as_json,
-        image: item.images.attached? ? url_for(item.images.first) : nil #thumbnail
+        image: item.images.attached? ? url_for(item.images.first) : nil # thumbnail
       }
     }
   end
@@ -50,6 +50,6 @@ class V1::ItemsController < ApplicationController
   end
 
   def item_params
-    params.require(:item).permit(:name, :description, :price, :category_id, images: [])
+    params.require(:item).permit(:title, :description, :price, :category_id, images: [])
   end
 end

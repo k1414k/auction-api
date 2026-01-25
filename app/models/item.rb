@@ -13,11 +13,10 @@ class Item < ApplicationRecord
   }
 
   enum condition: {
-    new: 0,
-    like_new: 1,
-    good: 2,
-    used: 3,
-    fair: 4,
+    like_new: 0,
+    good: 1,
+    used: 2,
+    fair: 3,
   }
 
   # enum shipping_fee_payer: {
