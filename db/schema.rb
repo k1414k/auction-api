@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_01_18_123847) do
+ActiveRecord::Schema[7.1].define(version: 2026_01_25_200657) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -57,12 +57,13 @@ ActiveRecord::Schema[7.1].define(version: 2026_01_18_123847) do
   create_table "items", force: :cascade do |t|
     t.integer "user_id", null: false
     t.integer "category_id", null: false
-    t.string "name", null: false
+    t.string "title", null: false
     t.text "description", default: "こちらの商品はまだ説明が書いていません。", null: false
     t.integer "price", null: false
     t.integer "trading_status", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "condition", default: 0, null: false
     t.index ["category_id"], name: "index_items_on_category_id"
     t.index ["price"], name: "index_items_on_price"
     t.index ["trading_status"], name: "index_items_on_trading_status"

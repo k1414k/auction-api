@@ -12,11 +12,13 @@ class Item < ApplicationRecord
     sold: 3
   }
 
-  # enum condition: {
-  #   new: 0,
-  #   like_new: 1,
-  #   used: 2
-  # }
+  enum condition: {
+    new: 0,
+    like_new: 1,
+    good: 2,
+    used: 3,
+    fair: 4,
+  }
 
   # enum shipping_fee_payer: {
   #   seller: 0,
