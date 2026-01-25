@@ -24,7 +24,6 @@ class Item < ApplicationRecord
   #   buyer: 1
   # }
 
-
   # Active Storage
   has_many_attached :images
   validate :image_type

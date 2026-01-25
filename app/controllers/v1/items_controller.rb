@@ -21,8 +21,11 @@ class V1::ItemsController < ApplicationController
   end
 
   def create
-    @item = current_user.items.build(item_params)
-    
+    p = item_params
+    p[:condition] = p[:condition].to_i if p[:condition]
+    p[:trading_status] = p[:trading_status].to_i if p[:trading_status]
+
+    @item = current_user.items.build(p)
     if @item.save
       render json: @item, status: :created
     else
@@ -50,6 +53,6 @@ class V1::ItemsController < ApplicationController
   end
 
   def item_params
-    params.require(:item).permit(:title, :description, :price, :category_id, images: [])
+    params.require(:item).permit(:title, :description, :price, :category_id, :condition, images: [])
   end
 end
