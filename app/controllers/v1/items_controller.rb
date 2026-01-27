@@ -21,7 +21,7 @@ class V1::ItemsController < ApplicationController
   end
 
   def create
-    p = item_params
+    p = item_params # 文字列で来る場合があるので整数形にする
     p[:condition] = p[:condition].to_i if p[:condition]
     p[:trading_status] = p[:trading_status].to_i if p[:trading_status]
 
