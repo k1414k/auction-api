@@ -6,8 +6,8 @@ Rails.application.routes.draw do
     patch 'user/wallet', to: 'users#update_wallet'
     patch 'user/avatar', to: 'users#update_avatar'
 
+    put 'favorites/:item_id', to: 'favorites#toggle'
     resources :categories, only: [:index]
     resources :items
-    resources :favorites, only: [:create, :destroy]
   end
 end

@@ -2,14 +2,16 @@ class V1::FavoritesController < ApplicationController
   before_action :authenticate_user!
   before_action :set_item
 
-  def create
-    current_user.favorites.create!(item: @item)
-    render json: { favorited: true }
-  end
+  def toggle
+    favorite = current_user.favorites.find_by(item: @item)
 
-  def destroy
-    current_user.favorites.find_by(item: @item)&.destroy
-    render json: { favorited: false }
+    if favorite
+      favorite.destroy
+      render json: { favorited: false }
+    else
+      current_user.favorites.create!(item: @item)
+      render json: { favorited: true }
+    end
   end
 
   private

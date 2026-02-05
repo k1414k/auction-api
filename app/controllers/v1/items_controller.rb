@@ -7,8 +7,8 @@ class V1::ItemsController < ApplicationController
     render json: items.map { |item|
       {
         **item.as_json,
-        image: item.images.attached? ? url_for(item.images.first) : nil, # thumbnail
-        is_favorited: current_user ? current_user.favorited?(item) : false
+        is_favorited: current_user ? current_user.favorited?(item) : false,
+        image: item.images.attached? ? url_for(item.images.first) : nil # thumbnail
       }
     }
   end
@@ -17,8 +17,10 @@ class V1::ItemsController < ApplicationController
     item = Item.includes(images_attachments: :blob).find(params[:id])
     render json: {
         **item.as_json,
-        images: item.images.map { |img| url_for(img) },
-        is_favorited: current_user ? current_user.favorited?(item) : false
+        user_nickname: item.user.nickname,
+        created_by_current_user: current_user.id === item.user_id,
+        is_favorited: current_user ? current_user.favorited?(item) : false,
+        images: item.images.map { |img| url_for(img) }
       }
   end
 
