@@ -1,13 +1,14 @@
 class V1::ItemsController < ApplicationController
   before_action :set_item, only: [:show, :update, :destroy]
-  before_action :authenticate_user!, only: [:create]
+  before_action :authenticate_user!, only: [:index, :show, :create]
   
   def index
     items = Item.includes(images_attachments: :blob) # N+1 対策
     render json: items.map { |item|
       {
         **item.as_json,
-        image: item.images.attached? ? url_for(item.images.first) : nil # thumbnail
+        image: item.images.attached? ? url_for(item.images.first) : nil, # thumbnail
+        is_favorited: current_user ? current_user.favorited?(item) : false
       }
     }
   end
@@ -16,7 +17,8 @@ class V1::ItemsController < ApplicationController
     item = Item.includes(images_attachments: :blob).find(params[:id])
     render json: {
         **item.as_json,
-        images: item.images.map { |img| url_for(img) }
+        images: item.images.map { |img| url_for(img) },
+        is_favorited: current_user ? current_user.favorited?(item) : false
       }
   end
 
@@ -53,6 +55,6 @@ class V1::ItemsController < ApplicationController
   end
 
   def item_params
-    params.require(:item).permit(:title, :description, :price, :category_id, :condition, images: [])
+    params.require(:item).permit(:title, :description, :price, :category_id, :favorites, :condition, images: [])
   end
 end

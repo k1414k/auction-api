@@ -10,10 +10,10 @@ class V1::UsersController < ApplicationController
       points: current_user.points,
       introduction: current_user.introduction,
       role: current_user.role,
-      avatar_url: current_user.avatar.attached? ?
-      url_for(current_user.avatar) : nil
+      avatar_url: current_user.avatar.attached? ? url_for(current_user.avatar) : nil
     }
   end
+
 
   MAX_BALANCE_TRANSACTION = 100_000
   MAX_POINTS_TRANSACTION  = 1_000_000

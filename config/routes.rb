@@ -8,5 +8,6 @@ Rails.application.routes.draw do
 
     resources :categories, only: [:index]
     resources :items
+    resources :favorites, only: [:create, :destroy]
   end
 end

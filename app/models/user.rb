@@ -6,8 +6,6 @@ class User < ActiveRecord::Base
   has_many :buy_orders, class_name: "Order", foreign_key: :buyer_id
   has_many :sell_orders, class_name: "Order", foreign_key: :seller_id
   has_many :favorites, dependent: :destroy
-  #ユーザーは たくさんの favorites を持つ
-  #ユーザー削除時に その人のいいねも消す
   has_many :favorite_items, through: :favorites, source: :item
   #ユーザーはfavorites を経由してitem をたくさん持っているそれを favorite_items という名前で呼ぶ
   #N:N関係はthrough経由先が必要今はそれがfavoriteテーブル
@@ -24,6 +22,11 @@ class User < ActiveRecord::Base
 
   validates :nickname, presence: true, uniqueness: true, length: {minimum:2, maximum:10}
 
+
+  def favorited?(item)
+    favorites.exists?(item_id: item.id)
+  end  
+  
   private
 
   def create_nickname
@@ -36,5 +39,6 @@ class User < ActiveRecord::Base
   end
 
   enum role: { user: 0, admin: 1 }
-  
+
+
 end
