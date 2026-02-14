@@ -9,5 +9,6 @@ Rails.application.routes.draw do
     put 'favorites/:item_id', to: 'favorites#toggle'
     resources :categories, only: [:index]
     resources :items
+    resources :orders, only: [:create]
   end
 end

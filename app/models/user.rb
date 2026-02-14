@@ -7,6 +7,7 @@ class User < ActiveRecord::Base
   has_many :sell_orders, class_name: "Order", foreign_key: :seller_id
   has_many :favorites, dependent: :destroy
   has_many :favorite_items, through: :favorites, source: :item
+  has_many :addresses, dependent: :destroy
   #ユーザーはfavorites を経由してitem をたくさん持っているそれを favorite_items という名前で呼ぶ
   #N:N関係はthrough経由先が必要今はそれがfavoriteテーブル
 
