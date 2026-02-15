@@ -1,35 +1,75 @@
 class V1::OrderController < ApplicationController
-  before_action :authenticate_user
+  before_action :authenticate_user!
 
   def create
-    item = Item.find(params[:item_id])
-    
-    # 全ての処理が成功するか、全て失敗するかを保証する transaction
+    item = Item.find(order_params[:item_id])
+
+    # 購入可否チェック
+    validate_purchase!(item)
+
+    order = nil
     ActiveRecord::Base.transaction do
-      # 1. オーダーを作成（配送先情報をスナップショットとして保存）
-      Order.create!(
+      # 1. オーダーを作成（配送先をスナップショットとして保存）
+      shipping_address = build_shipping_address
+      order = Order.create!(
         item: item,
         buyer_id: current_user.id,
         seller_id: item.user_id,
-        shipping_address: "#{params[:shipping_name]} #{params[:shipping_address]}", # 名前と住所を合体させて保存
-        status: 1
+        shipping_address: shipping_address,
+        status: order_status_for_payment(order_params[:payment_method])
       )
 
-      # 2. ユーザーの「最後に使った住所」を更新
-      current_user.update!(
-        last_name: params[:shipping_name],
-        last_address: params[:shipping_address]
-      )
+      # 2. 支払い処理（ポイントの場合は即時引き落とし）
+      process_payment!(item, order_params[:payment_method])
 
       # 3. 商品を「取引中」にする
       item.update!(trading_status: :trading)
-
-      # ※ ここで残高を減らす処理などを追加しても良い
     end
 
-    render json: { message: "success" }, status: :ok
-  rescue => e
-    # 何か一つでも失敗すれば、DBは自動で元の状態に戻る（ロールバック）
+    render json: { message: "success", order_id: order.id }, status: :ok
+  rescue ActiveRecord::RecordNotFound => e
+    render json: { error: "商品が見つかりません" }, status: :not_found
+  rescue OrderController::PurchaseError => e
     render json: { error: e.message }, status: :unprocessable_entity
+  rescue => e
+    render json: { error: e.message }, status: :unprocessable_entity
+  end
+
+  private
+
+  class PurchaseError < StandardError; end
+
+  def order_params
+    params.permit(:item_id, :last_address_name, :last_address_detail, :payment_method, :address_id)
+  end
+
+  def validate_purchase!(item)
+    raise PurchaseError, "自分の商品は購入できません" if item.user_id == current_user.id
+    raise PurchaseError, "この商品は購入できません" unless item.listed?
+  end
+
+  def build_shipping_address
+    if order_params[:address_id].present?
+      address = current_user.addresses.find(order_params[:address_id])
+      "#{address.name} #{address.address}"
+    else
+      name = order_params[:last_address_name].to_s.strip
+      detail = order_params[:last_address_detail].to_s.strip
+      raise PurchaseError, "配送先を入力してください" if name.blank? || detail.blank?
+      "#{name} #{detail}"
+    end
+  end
+
+  def order_status_for_payment(payment_method)
+    # ポイント決済の場合は即時入金扱いで shipping 待ちへ
+    payment_method == "ポイント" ? :waiting_shipping : :waiting_payment
+  end
+
+  def process_payment!(item, payment_method)
+    return unless payment_method == "ポイント"
+
+    raise PurchaseError, "残高が足りません" if current_user.points < item.price
+
+    current_user.update!(points: current_user.points - item.price)
   end
 end
