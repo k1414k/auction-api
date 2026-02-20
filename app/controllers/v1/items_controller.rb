@@ -1,6 +1,6 @@
 class V1::ItemsController < ApplicationController
   before_action :set_item, only: [:show, :update, :destroy]
-  before_action :authenticate_user!, only: [:index, :show, :create]
+  before_action :authenticate_user!, only: [:create] # index/show は未ログインでも閲覧可
   
   def index
     items = Item.includes(images_attachments: :blob) # N+1 対策
@@ -18,16 +18,16 @@ class V1::ItemsController < ApplicationController
     render json: {
         **item.as_json,
         user_nickname: item.user.nickname,
-        created_by_current_user: current_user.id === item.user_id,
-        is_favorited: current_user ? current_user.favorited?(item) : false,
+        created_by_current_user: current_user&.id == item.user_id,
+        is_favorited: current_user&.favorited?(item) || false,
         images: item.images.map { |img| url_for(img) }
       }
   end
 
   def create
-    p = item_params # 文字列で来る場合があるので整数形にする
-    p[:condition] = p[:condition].to_i if p[:condition]
-    p[:trading_status] = p[:trading_status].to_i if p[:trading_status]
+    p = item_params
+    p[:condition] = p[:condition].to_i if p[:condition].present?
+    p[:trading_status] = p[:trading_status].present? ? p[:trading_status].to_i : Item.trading_statuses[:listed]
 
     @item = current_user.items.build(p)
     if @item.save
@@ -57,6 +57,6 @@ class V1::ItemsController < ApplicationController
   end
 
   def item_params
-    params.require(:item).permit(:title, :description, :price, :category_id, :favorites, :condition, images: [])
+    params.require(:item).permit(:title, :description, :price, :category_id, :favorites, :condition, :trading_status, images: [])
   end
 end

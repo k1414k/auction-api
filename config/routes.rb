@@ -10,6 +10,6 @@ Rails.application.routes.draw do
     resources :categories, only: [:index]
     resources :items
     resources :addresses, only: [:index, :create, :update, :destroy]
-    resources :orders, only: [:create]
+    resources :orders, only: [:create], controller: 'order'
   end
 end

@@ -22,7 +22,13 @@ class V1::OrderController < ApplicationController
       # 2. 支払い処理（ポイントの場合は即時引き落とし）
       process_payment!(item, order_params[:payment_method])
 
-      # 3. 商品を「取引中」にする
+      # 3. ポイント決済の場合は売り手の売上（balance）に加算
+      if order_params[:payment_method].to_s == "ポイント"
+        seller = item.user
+        seller.update!(balance: seller.balance + item.price)
+      end
+
+      # 4. 商品を「取引中」にする
       item.update!(trading_status: :trading)
     end
 
