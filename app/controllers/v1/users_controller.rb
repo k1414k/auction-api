@@ -17,24 +17,34 @@ class V1::UsersController < ApplicationController
 
   MAX_BALANCE_TRANSACTION = 100_000
   MAX_POINTS_TRANSACTION  = 1_000_000
-  ALLOWED_TYPES = %w[balance points].freeze
+  ALLOWED_TYPES = %w[balance points charge].freeze
+
   def update_wallet
     amount = params.require(:amount).to_i
-    type   = params.require(:type)
+    type   = params.require(:type).to_s
 
     return error("invalid type") unless ALLOWED_TYPES.include?(type)
-    return error("amount must not be 0") if amount.zero?
 
-    limit = type == "balance" ? MAX_BALANCE_TRANSACTION : MAX_POINTS_TRANSACTION
-    return error("amount is too large") if amount.abs > limit
-
-    current_user.with_lock do
-      current_value = current_user.public_send(type)
-      new_value = current_value + amount
-
-      return error("insufficient #{type}") if new_value < 0
-
-      current_user.update!(type => new_value)
+    if type == "charge"
+      # 売上（balance）をポイントに振り替え
+      return error("チャージする金額を入力してください") if amount <= 0
+      current_user.with_lock do
+        return error("売上高が足りません") if current_user.balance < amount
+        current_user.update!(
+          balance: current_user.balance - amount,
+          points: current_user.points + amount
+        )
+      end
+    else
+      return error("amount must not be 0") if amount.zero?
+      limit = type == "balance" ? MAX_BALANCE_TRANSACTION : MAX_POINTS_TRANSACTION
+      return error("amount is too large") if amount.abs > limit
+      current_user.with_lock do
+        current_value = current_user.public_send(type)
+        new_value = current_value + amount
+        return error("insufficient #{type}") if new_value < 0
+        current_user.update!(type => new_value)
+      end
     end
 
     render json: {
