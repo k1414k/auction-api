@@ -5,8 +5,11 @@ ruby "3.2.4"
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem "rails", "~> 7.1.6"
 
-# Use sqlite3 as the database for Active Record
-gem "sqlite3", ">= 1.4"
+# PostgreSQLアダプター（本番・開発どちらもPostgreSQLを使う）
+gem "pg", "~> 1.5"
+
+# 画像をAWS S3に保存するために必要
+gem "aws-sdk-s3", require: false
 
 # Use the Puma web server [https://github.com/puma/puma]
 gem "puma", ">= 5.0"
