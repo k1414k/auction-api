@@ -9,6 +9,13 @@ Rails.application.routes.draw do
   # 認証エンドポイントはサービス共通で /auth にまとめる。
   mount_devise_token_auth_for "User", at: "auth"
   
+  namespace :admin do
+    namespace :v1, module: :v1, path: "v1" do
+      resources :items
+      resources :categories
+    end
+  end
+
   namespace :auction do
     namespace :v1, module: :v1, path: "v1" do
       get "user", to: "users#my_profile"
