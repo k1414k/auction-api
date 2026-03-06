@@ -16,6 +16,15 @@ Rails.application.routes.draw do
     end
   end
 
+
+  namespace :web do
+    namespace :v1 do
+      resources :posts, only: [:index], param: :slug
+      get "posts/:slug", to: "posts#show"
+    end
+  end
+
+  
   namespace :auction do
     namespace :v1, module: :v1, path: "v1" do
       get "user", to: "users#my_profile"
